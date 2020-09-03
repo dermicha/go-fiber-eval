@@ -4,6 +4,8 @@ import (
 	"./book"
 	"./database"
 	"fmt"
+	"github.com/gofiber/cors"
+	_ "github.com/gofiber/cors"
 	"github.com/gofiber/fiber"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -26,10 +28,13 @@ func setupRoutes(app *fiber.App) {
 
 	app.Get("/file", getFile)
 
-	app.Get("/api/v1/book", book.GetBooks)
-	app.Get("/api/v1/book/:id", book.GetBook)
-	app.Post("/api/v1/book", book.NewBook)
-	app.Delete("/api/v1/book/:id", book.DeleteBook)
+	apiV1 := app.Group("/api/v1", cors.New())
+
+	apiV1.Get("/book", book.GetBooks)
+	apiV1.Get("/book/:id", book.GetBook)
+	apiV1.Post("/book", book.NewBook)
+	apiV1.Delete("/book/:id", book.DeleteBook)
+
 }
 
 func initDatabase() {
